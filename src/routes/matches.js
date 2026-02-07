@@ -10,7 +10,7 @@ const MAX_LIMIT = 100;
 export const matchRouter = new Router();
 
 matchRouter.get("/", async (req, res) => {
-    const parsed = listMatchesQuerySchema.safeParse(req.params);
+    const parsed = listMatchesQuerySchema.safeParse(req.query);
 
     if (!parsed.success) return res.status(400).json({
         error: "Invalid query params.",
@@ -22,12 +22,11 @@ matchRouter.get("/", async (req, res) => {
     try {
         const data = await db.select().from(matches).orderBy(desc(matches.createdAt)).limit(limit);
 
-        console.log(data)
-
         res.status(200).json(data)
     } catch (err) {
         console.error(err)
-        res.status(500).json({error: "Failed to retrieve tha matches.", details: JSON.stringify(new Error(err))})
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        res.status(500).json({error: "Failed to retrieve the matches.", details: errorMessage});
     }
 })
 
@@ -47,6 +46,7 @@ matchRouter.post("/", async (req, res) => {
         res.status(201).json({message: "Match created successfully.", data: event})
     } catch (err) {
         console.error(err)
-        res.status(500).json({error: "Failed to create the match.", details: JSON.stringify(new Error(err))})
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        res.status(500).json({error: "Failed to create the match.", details: errorMessage})
     }
 })
