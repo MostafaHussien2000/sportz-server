@@ -35,7 +35,7 @@ export const createMatchSchema = z.object({
     }
 });
 
-export const updatematchSchema = z.object({
+export const updateMatchSchema = z.object({
     homeScore: z.coerce.number().int().nonnegative(),
     awayScore: z.coerce.number().int().nonnegative()
 })
