@@ -2,6 +2,7 @@ import express from "express";
 import http from "http";
 import { createMatchRouter } from "./routes/matches.js";
 import { attachWebSocketServer } from "./ws/server.js";
+import { createCommentaryRouter } from "./routes/commentary.js";
 
 const PORT = Number(process.env.PORT || 8080);
 const HOST = process.env.HOST || "0.0.0.0";
@@ -11,7 +12,8 @@ const app = express();
 const server = http.createServer(app);
 
 // Attach WebSocket server to the HTTP server
-const { broadcastMatchCreated } = attachWebSocketServer(server);
+const { broadcastMatchCreated, broadcastCommentaryCreated } =
+  attachWebSocketServer(server);
 
 app.use(express.json());
 
@@ -21,6 +23,10 @@ app.get("/", (req, res) => {
 
 // Pass dependencies to the router
 app.use("/matches", createMatchRouter({ broadcastMatchCreated }));
+app.use(
+  "/matches/:id/commentary",
+  createCommentaryRouter({ broadcastCommentaryCreated }),
+);
 
 server.listen(PORT, HOST, () => {
   const baseUrl =
