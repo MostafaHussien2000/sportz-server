@@ -25,7 +25,7 @@ export function createCommentaryRouter({ broadcastCommentaryCreated }) {
     if (!queryResult.success)
       return res.status(400).json({
         error: "Invalid query params.",
-        details: JSON.stringify(queryResult.error),
+        details: queryResult.error.issues,
       });
 
     const limit = Math.min(queryResult.data.limit ?? 50, MAX_LIMIT);
