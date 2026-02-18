@@ -22,14 +22,11 @@ export function createCommentaryController({ broadcastCommentaryCreated }) {
       });
 
     try {
-      const { minute, ...rest } = bodyResult.data;
-
       const [event] = await db
         .insert(commentary)
         .values({
           matchId: paramsResult.data.id,
-          minute,
-          ...rest,
+          ...bodyResult.data,
         })
         .returning();
 
