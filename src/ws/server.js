@@ -52,7 +52,11 @@ function handleMessage(socket, data) {
     return;
   }
 
-  if (message.type === "subscribe" && Number.isInteger(message.data.matchId)) {
+  if (
+    message.type === "subscribe" &&
+    message.data &&
+    Number.isInteger(message.data.matchId)
+  ) {
     subscribe(message.data.matchId, socket);
     socket.subscriptions.add(message.data.matchId);
     sendJSON(socket, {
@@ -64,6 +68,7 @@ function handleMessage(socket, data) {
 
   if (
     message.type === "unsubscribe" &&
+    message.data &&
     Number.isInteger(message.data.matchId)
   ) {
     unsubscribe(message.data.matchId, socket);
