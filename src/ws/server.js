@@ -123,15 +123,16 @@ export function attachWebSocketServer(server) {
 
     socket.on("message", (data) => handleMessage(socket, data));
 
-    socket.on("error", () => socket.terminate());
+    socket.on("error", (err) => {
+      console.error("WS connection error: ", err);
+      socket.terminate();
+    });
 
     socket.on("close", () => cleanupSubscriptions(socket));
 
     socket.on("pong", () => {
       socket.isAlive = true;
     });
-
-    socket.on("error", console.error);
   });
 
   const heartbeatInterval = setInterval(() => {
