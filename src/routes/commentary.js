@@ -9,7 +9,7 @@ import { commentary } from "../db/schema.js";
 const MAX_LIMIT = 100;
 
 export function createCommentaryRouter({ broadcastCommentaryCreated }) {
-  const router = new Router({ mergeParams: true });
+  const router = Router({ mergeParams: true });
 
   router.get("/", async (req, res) => {
     const paramsResult = matchIdParamSchema.safeParse(req.params);
