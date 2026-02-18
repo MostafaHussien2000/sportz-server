@@ -22,7 +22,7 @@ function unsubscribe(matchId, socket) {
 }
 
 function cleanupSubscriptions(socket) {
-  for (const matchId of socket.subscribtions) {
+  for (const matchId of socket.subscriptions) {
     unsubscribe(matchId, socket);
   }
 }
@@ -54,7 +54,7 @@ function handleMessage(socket, data) {
 
   if (message.type === "subscribe" && Number.isInteger(message.data.matchId)) {
     subscribe(message.data.matchId, socket);
-    socket.subscribtions.add(message.data.matchId);
+    socket.subscriptions.add(message.data.matchId);
     sendJSON(socket, {
       type: "subscribed",
       data: { matchId: message.data.matchId },
@@ -67,7 +67,7 @@ function handleMessage(socket, data) {
     Number.isInteger(message.data.matchId)
   ) {
     unsubscribe(message.data.matchId, socket);
-    socket.subscribtions.delete(message.data.matchId);
+    socket.subscriptions.delete(message.data.matchId);
     sendJSON(socket, {
       type: "unsubscribed",
       data: { matchId: message.data.matchId },
@@ -119,7 +119,7 @@ export function attachWebSocketServer(server) {
 
     socket.isAlive = true;
 
-    socket.subscribtions = new Set();
+    socket.subscriptions = new Set();
 
     socket.on("message", (data) => handleMessage(socket, data));
 
