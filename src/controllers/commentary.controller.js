@@ -30,7 +30,12 @@ export function createCommentaryController({ broadcastCommentaryCreated }) {
         })
         .returning();
 
-      broadcastCommentaryCreated?.(paramsResult.data.id, event);
+      // Safe broadcast - avoid 500 if broadcast fails
+      try {
+        broadcastCommentaryCreated?.(paramsResult.data.id, event);
+      } catch (broadcastError) {
+        console.error("Broadcast failed:", broadcastError);
+      }
 
       return res
         .status(201)
