@@ -2,6 +2,7 @@ import express from "express";
 import http from "http";
 import { createMatchRouter } from "./routes/matches.js";
 import { attachWebSocketServer } from "./ws/server.js";
+import { createCommentaryRouter } from "./routes/commentary.js";
 import { securityMiddleware } from "./arcjet.js";
 
 const PORT = Number(process.env.PORT || 8080);
@@ -12,7 +13,8 @@ const app = express();
 const server = http.createServer(app);
 
 // Attach WebSocket server to the HTTP server
-const { broadcastMatchCreated } = attachWebSocketServer(server);
+const { broadcastMatchCreated, broadcastCommentaryCreated } =
+  attachWebSocketServer(server);
 
 app.use(express.json());
 
@@ -24,6 +26,10 @@ app.use(securityMiddleware());
 
 // Pass dependencies to the router
 app.use("/matches", createMatchRouter({ broadcastMatchCreated }));
+app.use(
+  "/matches/:id/commentary",
+  createCommentaryRouter({ broadcastCommentaryCreated }),
+);
 
 server.listen(PORT, HOST, () => {
   const baseUrl =
